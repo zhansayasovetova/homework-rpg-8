@@ -1,17 +1,50 @@
 package com.narxoz.rpg;
 
-/**
- * Entry point for Homework 8 — The Haunted Tower: Ascending the Floors.
- *
- * Build your heroes, floors, tower runner, and execute the climb here.
- */
+import com.narxoz.rpg.combatant.Hero;
+import com.narxoz.rpg.floor.TowerFloor;
+import com.narxoz.rpg.floor.impl.BattleFloor;
+import com.narxoz.rpg.floor.impl.RestFloor;
+import com.narxoz.rpg.floor.impl.TrapFloor;
+import com.narxoz.rpg.state.BerserkState;
+import com.narxoz.rpg.state.StunnedState;
+import com.narxoz.rpg.tower.TowerRunner;
+import com.narxoz.rpg.tower.TowerRunResult;
+
+import java.util.Arrays;
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
-        // TODO (student): Create at least 2 heroes with different starting states
-        // TODO (student): Create a sequence of ≥ 4 floors using ≥ 3 distinct floor subclasses
-        // TODO (student): Instantiate a tower runner and execute the tower climb
-        // TODO (student): Track and print results (floors cleared, heroes surviving, tower status)
-        // TODO (student): Demonstrate visible state transitions in the output
+        Hero aragorn = new Hero("Aragorn", 100, 15, 5);
+        Hero legolas = new Hero("Legolas", 85, 18, 3);
+
+        aragorn.setState(new BerserkState());
+        legolas.setState(new StunnedState());
+
+        List<Hero> party = Arrays.asList(aragorn, legolas);
+
+        List<TowerFloor> floors = Arrays.asList(
+                new BattleFloor(),
+                new TrapFloor(),
+                new RestFloor(),
+                new BattleFloor()
+        );
+
+        TowerRunner runner = new TowerRunner(floors);
+        TowerRunResult result = runner.run(party);
+
+        System.out.println("\n=== FINAL RESULT ===");
+        System.out.println("Floors cleared: " + result.getFloorsCleared());
+        System.out.println("Heroes surviving: " + result.getHeroesSurviving());
+        System.out.println("Reached top: " + result.isReachedTop());
+
+        System.out.println("\n=== FINAL HERO STATUS ===");
+        for (Hero hero : party) {
+            System.out.println(hero.getName()
+                    + " | HP: " + hero.getHp()
+                    + "/" + hero.getMaxHp()
+                    + " | State: " + hero.getState().getName());
+        }
     }
 }
